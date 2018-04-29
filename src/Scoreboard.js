@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 const INITIAL_STATE = {
   players: [
@@ -15,28 +16,45 @@ const INITIAL_STATE = {
       score: 50,
     },
   ],
-}
+};
 
-const Application = React.createClass({
-  getInitialState: function () {
-    return INITIAL_STATE;
-  },
-  onScoreChange: function(index, delta) {
+class Scoreboard extends Component {
+  constructor(props) {    /* Note props is passed into the constructor in order to be used */
+        super(props);
+        this.state = {
+          players: [
+            {
+              name: 'Jim Hoskins',
+              score: 31,
+            },
+            {
+              name: 'Andrew Chalkley',
+              score: 20,
+            },
+            {
+              name: 'Alena Holligan',
+              score: 50,
+            },
+          ]
+        };
+  }
+
+  onScoreChange = (index, delta) => {
     this.state.players[index].score += delta;
     this.setState(this.state);
-  },
+  }
 
-  onAddPlayer: function(name) {
+  onAddPlayer = (name) => {
     this.state.players.push({ name: name, score: 0 });
     this.setState(this.state);
-  },
+  }
 
-  onRemovePlayer: function(index) {
+  onRemovePlayer = (index) => {
     this.state.players.splice(index, 1);
     this.setState(this.state);
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div className="scoreboard">
         <Header players={this.state.players} />
@@ -57,7 +75,7 @@ const Application = React.createClass({
       </div>
     );
   }
-});
+}
 
 // Move to components/Header.js
 // ----------------------------------------------
@@ -72,7 +90,7 @@ function Header(props) {
 }
 
 Header.propTypes = {
-  players: React.PropTypes.array.isRequired,
+  players: PropTypes.array.isRequired
 };
 
 // Move to components/Stats.js
@@ -100,50 +118,50 @@ function Stats(props) {
 }
 
 Stats.propTypes = {
-  players: React.PropTypes.array.isRequired,
+  players: PropTypes.array.isRequired,
 };
 
 // Move to components/Stopwatch.js
 // ------------------------------------------------------------------------
-const Stopwatch = React.createClass({
-  getInitialState: function () {
-    return ({
-      running: false,
-      previouseTime: 0,
-      elapsedTime: 0,
-    });
-  },
+class Stopwatch extends Component{
+  constructor(props) {
+      super(props);
+      this.state = {
+        running: false,
+        previouseTime: 0,
+        elapsedTime: 0,
+      }
+  }
 
-  componentDidMount: function () {
+  componentDidMount = () => {
     this.interval = setInterval(this.onTick);
-  },
+  }
 
-  componentWillUnmount: function () {
+  componentWillUnmount = () => {
     clearInterval(this.interval);
-  },
+  }
 
-
-  onStart: function () {
+  onStart = () => {
     this.setState({
       running: true,
       previousTime: Date.now(),
     });
-  },
+  }
 
-  onStop: function () {
+  onStop = () => {
     this.setState({
       running: false,
     });
-  },
+  }
 
-  onReset: function () {
+  onReset = () => {
     this.setState({
       elapsedTime: 0,
       previousTime: Date.now(),
     });
-  },
+  }
 
-  onTick: function () {
+  onTick = () => {
     if (this.state.running) {
       var now = Date.now();
       this.setState({
@@ -151,9 +169,9 @@ const Stopwatch = React.createClass({
         previousTime: Date.now(),
       });
     }
-  },
+  }
 
-  render: function () {
+  render() {
     var seconds = Math.floor(this.state.elapsedTime / 1000);
     return (
       <div className="stopwatch" >
@@ -168,7 +186,7 @@ const Stopwatch = React.createClass({
       </div>
     )
   }
-});
+}
 
 // Move to components/Player.js
 // ----------------------------------------------------------------------
@@ -187,10 +205,10 @@ function Player(props) {
 }
 
 Player.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  score: React.PropTypes.number.isRequired,
-  onRemove: React.PropTypes.func.isRequired,
-  onScoreChange: React.PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onScoreChange: PropTypes.func.isRequired,
 };
 
 // Move to components/Counter.js
@@ -210,31 +228,34 @@ function Counter(props) {
 }
 
 Counter.propTypes = {
-  onChange: React.PropTypes.func.isRequired,
-  score: React.PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-const AddPlayerForm = React.createClass({
+class AddPlayerForm extends Component {
   propTypes: {
-    onAdd: React.PropTypes.func.isRequired,
-  },
+    onAdd: PropTypes.func.isRequired,
+  }
 
-  getInitialState: function () {
-    return { name: '' };
-  },
+  constructor(){
+    super();
+    this.state = {
+      name: ''
+    }
+  }
 
-  onNameChange: function (e) {
+  onNameChange = (e) => {
     const name = e.target.value;
     this.setState({ name: name });
-  },
+  }
 
-  onSubmit: function (e) {
+  onSubmit = (e) => {
     if (e) e.preventDefault();
     this.props.onAdd(this.state.name);
     this.setState({ name: '' });
-  },
+  }
 
-  render: function () {
+  render() {
     return (
       <div className="add-player-form">
         <form onSubmit={this.onSubmit}>
@@ -249,4 +270,6 @@ const AddPlayerForm = React.createClass({
       </div>
     );
   }
-});
+}
+
+export default Scoreboard;
