@@ -15,7 +15,7 @@ const initialState = [
   },
 ];
 
-export default function Player(state=initialState, action){
+function Player(state=initialState, action){
   switch(action.type){
     case PlayerActionType.ADD_PLAYER:
       return [
@@ -41,8 +41,11 @@ export default function Player(state=initialState, action){
           }
         }
         return player;
-      })
+      });
 
-    default state;
+    default:
+      return state
   }
 }
+
+export default Player;
