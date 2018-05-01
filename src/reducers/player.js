@@ -64,6 +64,10 @@ function Player(state=initialState, action){
         }
         return player;
       })
+      return {
+				...state,
+				players: updatePlayerList
+			};
 
     case PlayerActionType.SELECT_PLAYER:
       return {
